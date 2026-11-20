@@ -5,8 +5,13 @@
 # version: 0.1.0
 # authors: Niclas Andersson and contributors
 # url: https://github.com/Seaserpent/igkt-dictionary-theme-component
-# required_version: 3.3.0
+# required_version: 3.4.0
 
+# The theme this plugin serves needs Discourse 3.4.0. It imports the named
+# `i18n` function from `discourse-i18n`, which 3.3.0 does not export, and it
+# calls `apiInitializer` with a callback and no API version string. That form
+# of `withPluginApi` arrived in 3.4.0. The header-icon and hide-sidebar helpers
+# are older; they are not what sets this floor.
 enabled_site_setting :igkt_dictionary_route_enabled
 
 module ::IgktDictionaryRoute
