@@ -3,6 +3,10 @@
 plugins:
   custom_route_enabled:
     default: false
+  custom_route_paths:
+    type: list
+    default: ""
+    regex: '\A(?:/[a-z][a-z0-9-]{0,62}(?:\|/[a-z][a-z0-9-]{0,62})*)?\z'
   custom_route_path:
     default: ""
     regex: '\A(?:/[a-z][a-z0-9-]{0,62})?\z'

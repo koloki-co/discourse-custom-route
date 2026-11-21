@@ -6,14 +6,27 @@ RSpec.describe DiscourseCustomRoute::PageController do
   describe "#show" do
     before do
       SiteSetting.custom_route_enabled = true
-      SiteSetting.custom_route_path = "/sample-glossary"
+      SiteSetting.custom_route_paths = "/sample-glossary|/resources"
     end
 
-    it "serves the app shell on the configured path" do
+    it "serves the app shell at each configured path" do
       get "/sample-glossary/?q=example"
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include('id="main-outlet"')
+
+      get "/resources"
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "uses the old path only while the list is empty" do
+      SiteSetting.custom_route_path = "/old-glossary"
+      get "/old-glossary"
+      expect(response).to have_http_status(:not_found)
+
+      SiteSetting.custom_route_paths = ""
+      get "/old-glossary"
+      expect(response).to have_http_status(:ok)
     end
 
     it "leaves other and disabled paths to normal routing" do
@@ -39,6 +52,15 @@ RSpec.describe DiscourseCustomRoute::PageController do
       get "/sample-glossary"
 
       expect(response).to redirect_to("https://example.com/glossary")
+    end
+
+    it "leaves built-in routes in place" do
+      SiteSetting.custom_route_paths = "/latest"
+
+      get "/latest"
+
+      expect(response).to have_http_status(:ok)
+      expect(request.path_parameters[:controller]).to eq("list")
     end
 
     it "respects the site's login requirement" do

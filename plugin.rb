@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 # name: discourse-custom-route
-# about: Serves the Discourse application shell at one configured path.
+# about: Serves the Discourse application shell at configured paths.
 # version: 0.1.0
 # authors: Niclas Andersson and contributors
 
@@ -18,8 +18,11 @@ after_initialize do
 
   Discourse::Application.routes.append do
     custom_route = ->(request) do
-      SiteSetting.custom_route_enabled && request.format.html? &&
-        request.path_info.delete_suffix("/") == SiteSetting.custom_route_path
+      next false unless SiteSetting.custom_route_enabled && request.format.html?
+
+      path = request.path_info.delete_suffix("/")
+      paths = SiteSetting.custom_route_paths.split("|")
+      paths.empty? ? path == SiteSetting.custom_route_path : paths.include?(path)
     end
 
     constraints(custom_route) do

@@ -1,36 +1,34 @@
 # Discourse Custom Route
 
-Give a theme component's custom page a URL that visitors can open directly, bookmark or refresh. Discourse Custom Route serves the Discourse app shell at one configured path; the theme component still owns the page.
+If a link to `/glossary` works inside Discourse but refreshing the page gives you a 404, the browser knows the route and the server doesn't. A theme component can register an Ember route, but it can't tell Rails what to do when someone opens that URL directly. This plugin tells Rails to serve the usual Discourse app at that path. Ember then hands the page to the theme component.
 
-For example, a theme component might already open `/glossary` from a header link, but a fresh tab at the same URL gets a 404. This plugin bridges that gap. It doesn't add an Ember route, page content, redirects or data access.
-
-**Status:** development preview, tested on a local Discourse checkout. No minimum supported Discourse version has been established.
+I wanted to keep the [dictionary](https://github.com/koloki-co/igkt-dictionary-theme-component) in a theme component without writing a separate plugin for the whole dictionary. The same setup works for other theme pages. This plugin adds no page content, redirects or data endpoints.
 
 ## Install and configure
 
-You need a Discourse installation that supports custom plugins and a theme component that already registers the matching Ember route. For `discourse_docker`, add this command to the existing `hooks.after_code` plugin install list in `containers/app.yml` (the list that runs in `$home/plugins`):
+You need a Discourse installation that allows custom plugins. On a `discourse_docker` install, add this line to the existing `hooks.after_code` command list that runs in `$home/plugins`:
 
 ```sh
 git clone https://github.com/koloki-co/discourse-custom-route.git
 ```
 
-Rebuild with `./launcher rebuild app` from the Discourse Docker directory (use your container name if it isn't `app`). If the repository is private, the build also needs read access to it.
+Run `./launcher rebuild app` from the Discourse Docker directory. Use your container name if it isn't `app`.
 
-1. Choose an unused one-segment path such as `/glossary`. Use a lowercase ASCII letter first, followed by up to 62 lowercase letters, digits or hyphens. Existing server routes and permalinks take precedence.
-2. Set `custom_route_path` to that path, matching the Ember route map exactly, and enable `custom_route_enabled`. Both settings are server-side. The plugin defaults to disabled with no path; changing these settings does not require a rebuild.
-3. Open the configured URL directly in a fresh tab. An HTTP 200 alone only confirms the shell loaded; check that the intended theme page renders.
+1. Install and attach the theme component that registers the client route. For the Multilingual Dictionary, that route is `/dictionary`.
+2. In **Admin → Settings**, search for `custom_route`. Add `/dictionary` to **Custom route paths**, then turn on **Custom route enabled**. To serve another theme page at `/resources`, add `/resources` as another entry. The paths must match the routes the themes actually register.
+3. Open each URL directly in a new tab and refresh it. Check that you see the theme's page, not just the Discourse header.
 
-Only HTML navigation is supported. A trailing slash and query string are accepted; nested paths and JSON endpoints are not. Existing server routes and permalinks win, and the site's normal login requirements still apply.
+Settings changes don't require a rebuild. Each path has one segment: a slash, a lowercase ASCII letter, then up to 62 lowercase ASCII letters, digits or hyphens. Existing routes and permalinks take precedence. The plugin leaves the site's login requirements in place. It serves HTML, including URLs with a trailing slash or query string, not JSON endpoints.
+
+If you used the old **Custom route path** setting, move its value into the list and clear the old field. The old field is used only when the list is empty.
 
 ## Development
 
-With the repository installed or symlinked in a Discourse development checkout, run from the Discourse root:
+This is a development version; no minimum supported Discourse version has been established. Run the request specs from the Discourse root with the plugin installed:
 
 ```sh
 bin/rspec plugins/discourse-custom-route/spec/requests/discourse_custom_route/page_controller_spec.rb
 ```
-
-Keep changes limited to the server-side route. Frontend code, content and data belong in the consuming project.
 
 ## Licence
 
