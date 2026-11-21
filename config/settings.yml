@@ -1,4 +1,8 @@
+# SPDX-FileCopyrightText: 2026 Niclas Andersson and contributors
+# SPDX-License-Identifier: MIT
 plugins:
-  igkt_dictionary_route_enabled:
-    default: true
-    client: false
+  custom_route_enabled:
+    default: false
+  custom_route_path:
+    default: ""
+    regex: '\A(?:/[a-z][a-z0-9-]{0,62})?\z'

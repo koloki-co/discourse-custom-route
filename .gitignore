@@ -1,0 +1,6 @@
+/.private/
+/.playwright-mcp/
+/.playwright/
+/playwright-report/
+/blob-report/
+/test-results/

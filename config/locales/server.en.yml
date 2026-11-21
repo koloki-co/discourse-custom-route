@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Niclas Andersson and contributors
+# SPDX-License-Identifier: MIT
 en:
   site_settings:
-    igkt_dictionary_route_enabled: "Serve the Discourse application at /dictionary so the knot dictionary theme component can be opened directly, bookmarked and refreshed."
+    custom_route_enabled: "Serve the Discourse application shell at the configured custom route."
+    custom_route_path: "One unused path such as /glossary. Use a lowercase letter first, then lowercase letters, digits or hyphens. Leave blank to serve no route."

@@ -1,34 +1,31 @@
 # frozen_string_literal: true
+# SPDX-FileCopyrightText: 2026 Niclas Andersson and contributors
+# SPDX-License-Identifier: MIT
 
-# name: igkt-dictionary-route
-# about: Serves the Discourse Ember application at /dictionary so the knot dictionary theme component survives a direct visit, bookmark or refresh.
+# name: discourse-custom-route
+# about: Serves the Discourse application shell at one configured path.
 # version: 0.1.0
 # authors: Niclas Andersson and contributors
-# url: https://github.com/Seaserpent/igkt-dictionary-theme-component
-# required_version: 3.4.0
 
-# The theme this plugin serves needs Discourse 3.4.0. It imports the named
-# `i18n` function from `discourse-i18n`, which 3.3.0 does not export, and it
-# calls `apiInitializer` with a callback and no API version string. That form
-# of `withPluginApi` arrived in 3.4.0. The header-icon and hide-sidebar helpers
-# are older; they are not what sets this floor.
-enabled_site_setting :igkt_dictionary_route_enabled
+enabled_site_setting :custom_route_enabled
 
-module ::IgktDictionaryRoute
-  PLUGIN_NAME = "igkt-dictionary-route"
-  # Keep this identical to the path in javascripts/discourse/dictionary-route-map.js.
-  # Theme route maps are literal strings, so a site setting cannot retarget the Ember route.
-  PATH = "/dictionary"
+module ::DiscourseCustomRoute
+  PLUGIN_NAME = "discourse-custom-route"
 end
 
 after_initialize do
-  # Load the controller explicitly. A theme component cannot add this route,
-  # and an engine mount at "/dictionary" only sees the path after the mount
-  # point, so a request for exactly /dictionary can miss it.
-  require_relative "app/controllers/igkt_dictionary_route/page_controller"
+  require_relative "app/controllers/discourse_custom_route/page_controller"
 
-  Discourse::Application.routes.prepend do
-    get ::IgktDictionaryRoute::PATH => "igkt_dictionary_route/page#show"
-    get "#{::IgktDictionaryRoute::PATH}/" => "igkt_dictionary_route/page#show"
+  Discourse::Application.routes.append do
+    custom_route = ->(request) do
+      SiteSetting.custom_route_enabled && request.format.html? &&
+        request.path_info.delete_suffix("/") == SiteSetting.custom_route_path
+    end
+
+    constraints(custom_route) do
+      get "/:custom_route_slug" => "discourse_custom_route/page#show",
+          format: false,
+          constraints: { custom_route_slug: /[a-z][a-z0-9-]{0,62}/ }
+    end
   end
 end
