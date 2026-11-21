@@ -20,7 +20,7 @@ Run `./launcher rebuild app` from the Discourse Docker directory. Use your conta
 
 Settings changes don't require a rebuild. Each path has one segment: a slash, a lowercase ASCII letter, then up to 62 lowercase ASCII letters, digits or hyphens. Existing routes and permalinks take precedence. The plugin leaves the site's login requirements in place. It serves HTML, including URLs with a trailing slash or query string, not JSON endpoints.
 
-If you used the old **Custom route path** setting, move its value into the list and clear the old field. The old field is used only when the list is empty.
+If you are upgrading from the single-path preview, add the previous path to **Custom route paths** after upgrading. The old setting is no longer used.
 
 ## Development
 

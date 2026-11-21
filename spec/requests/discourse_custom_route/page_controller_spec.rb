@@ -19,14 +19,12 @@ RSpec.describe DiscourseCustomRoute::PageController do
       expect(response).to have_http_status(:ok)
     end
 
-    it "uses the old path only while the list is empty" do
-      SiteSetting.custom_route_path = "/old-glossary"
-      get "/old-glossary"
-      expect(response).to have_http_status(:not_found)
-
+    it "serves no custom routes when the list is empty" do
       SiteSetting.custom_route_paths = ""
-      get "/old-glossary"
-      expect(response).to have_http_status(:ok)
+
+      get "/sample-glossary"
+
+      expect(response).to have_http_status(:not_found)
     end
 
     it "leaves other and disabled paths to normal routing" do

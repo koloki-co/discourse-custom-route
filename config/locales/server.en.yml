@@ -4,4 +4,3 @@ en:
   site_settings:
     custom_route_enabled: "Serve the Discourse application shell at the configured custom routes."
     custom_route_paths: "Add one unused path per entry, such as /glossary or /resources. Use one segment starting with a lowercase letter, followed by lowercase letters, digits or hyphens."
-    custom_route_path: "Legacy single path. Used only when Custom route paths is empty. Move this value to the list and clear this field."

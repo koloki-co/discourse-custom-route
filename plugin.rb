@@ -21,8 +21,7 @@ after_initialize do
       next false unless SiteSetting.custom_route_enabled && request.format.html?
 
       path = request.path_info.delete_suffix("/")
-      paths = SiteSetting.custom_route_paths.split("|")
-      paths.empty? ? path == SiteSetting.custom_route_path : paths.include?(path)
+      SiteSetting.custom_route_paths.split("|").include?(path)
     end
 
     constraints(custom_route) do
