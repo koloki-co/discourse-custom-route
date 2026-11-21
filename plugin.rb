@@ -4,7 +4,7 @@
 
 # name: discourse-custom-route
 # about: Serves the Discourse application shell at configured paths.
-# version: 0.1.0
+# version: 0.2.0
 # authors: Niclas Andersson and contributors
 
 enabled_site_setting :custom_route_enabled
