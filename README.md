@@ -6,17 +6,18 @@ I wanted to keep the [dictionary](https://github.com/koloki-co/igkt-dictionary-t
 
 ## Install and configure
 
-You need a Discourse installation that allows custom plugins. On a `discourse_docker` install, add this line to the existing `hooks.after_code` command list that runs in `$home/plugins`:
+You need a Discourse installation that allows custom server plugins. If your host manages plugin installation, ask them to install it. An admin cannot install this plugin through the theme importer.
 
-```sh
-git clone https://github.com/koloki-co/discourse-custom-route.git
-```
+1. On a `discourse_docker` install, open `containers/app.yml` in your Discourse Docker directory. In the `hooks` → `after_code` block, find the `exec` that runs in `$home/plugins`. Add this line to its `cmd` list, alongside the other plugin commands:
 
-Run `./launcher rebuild app` from the Discourse Docker directory. Use your container name if it isn't `app`.
+   ```yaml
+   - git clone https://github.com/koloki-co/discourse-custom-route.git
+   ```
 
-1. Install and attach the theme component that registers the client route. For the Multilingual Dictionary, that route is `/dictionary`.
-2. In **Admin → Settings**, search for `custom_route`. Add `/dictionary` to **Custom route paths**, then turn on **Custom route enabled**. To serve another theme page at `/resources`, add `/resources` as another entry. The paths must match the routes the themes actually register.
-3. Open each URL directly in a new tab and refresh it. Check that you see the theme's page, not just the Discourse header.
+2. From the Discourse Docker directory, run `./launcher rebuild app`. Use your container name if it isn't `app`.
+3. Install and attach the theme component to the theme your visitors use. Find the path it registers. For [Multilingual Dictionary](https://github.com/koloki-co/igkt-dictionary-theme-component), it's `/dictionary`.
+4. In **Admin → Settings**, search for `custom_route`. Add `/dictionary` to **Custom route paths**, then turn on **Custom route enabled**. To serve another theme page at `/resources`, add `/resources` as a separate entry. Add only paths that your theme components already register.
+5. Open each URL directly in a new tab and refresh. If the page is public, try it signed out too. A 404 on a fresh visit usually means the server path isn't active. If Discourse opens but the expected page is missing, check that the component is attached to the active theme and that its client route matches the configured path.
 
 Settings changes don't require a rebuild. Each path has one segment: a slash, a lowercase ASCII letter, then up to 62 lowercase ASCII letters, digits or hyphens. Existing routes and permalinks take precedence. The plugin leaves the site's login requirements in place. It serves HTML, including URLs with a trailing slash or query string, not JSON endpoints.
 
