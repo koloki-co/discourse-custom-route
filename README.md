@@ -25,11 +25,19 @@ If you are upgrading from the single-path preview, add the previous path to **Cu
 
 ## Development
 
-This is a development version; no minimum supported Discourse version has been established. Run the request specs from the Discourse root with the plugin installed:
+Version `v0.2.0` was tested on Discourse `2026.11.0-latest` (`9c72f9d3e93`), with the Resources example below and [Multilingual Dictionary `v0.4.0`](https://github.com/koloki-co/igkt-dictionary-theme-component/tree/v0.4.0). This is not a minimum-version claim. Run the request specs from the Discourse root with the plugin installed:
 
 ```sh
 bin/rspec plugins/discourse-custom-route/spec/requests/discourse_custom_route/page_controller_spec.rb
 ```
+
+## Try it without the dictionary
+
+Use an isolated development forum where `/resources` is unused. From this repository, run `tar -czf /tmp/resources-theme.tar.gz -C examples/resources-theme .`. Upload that archive through **Themes and components → Install → From your device**, then attach **Resources route example** to the theme you're using.
+
+1. Leave `/resources` out of **Custom route paths**. Open the forum home page and click **Resources** in the header. The page opens in the app. Refresh it and Discourse returns a 404.
+2. Add `/resources` to **Custom route paths** and make sure **Custom route enabled** is on. Open `/resources` directly and refresh. You should see the Resources heading and the text from the theme component both times.
+3. Remove `/resources` from the list and detach the example when finished. Leave any other configured paths in place.
 
 ## Licence
 
